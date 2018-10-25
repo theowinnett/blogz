@@ -3,14 +3,11 @@
 {% block content %}
 
             </div>
-            <center><h1>Welcome to build a blog!</h1></center>
+            <center><h1>Welcome to Blogz</h1></center>
 
         <div>
-            <h3 class = head>Entries</h3>
-            {% for post in title %}
-                <strong><h3 class = format><a href= "/blog?id={{post.id}}">{{ post.title }}</h3></a></strong>
-                
-                <em><h3 class = format>{{ post.text }}</h3></em>
-                
+            <center><h3 class = head>User Entries</h3></center>
+            {% for user in users %}
+            <center><strong><h3 class = format><a href= "/blog?user={{user.id}}">{{ user.username }}</h3></a></strong></center>
             {% endfor %}
 {% endblock %}

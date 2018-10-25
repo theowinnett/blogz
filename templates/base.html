@@ -10,9 +10,21 @@
         }
     </style>
         <body>
-            <div class = 'redirect'>
-                <a href= '/newpost'><h3>Submit an entry</h3></a>
-                <a href= '/'><h3>Main Dash</h3></a>
+            <div >
+                <a href= '/'><h3>Home</h3></a>
+                <a href= '/newpost'><h3>New Post</h3></a>
+                <a href= '/blog'><h3>All Posts</h3></a>
+                <a href= '/login'><h3>Log in</h3></a>
+                <a href= '/logout'><h3>Log out</h3></a>
+                
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                <ul>
+                {% for category,message in messages %}
+                    <li class="{{category}}">{{message}}</li>
+                {% endfor %}
+                </ul>
+                {% endwith %}
+        
                 {% block content %}
                 {% endblock %}
             </div>
