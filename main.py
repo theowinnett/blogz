@@ -8,9 +8,8 @@ app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y33tiyghjgkcjg'
 
-# How to password check?
+#classes (models)
 
-# Makes my class for the databases
 class Post(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +21,8 @@ class Post(db.Model):
 		self.title = title 
 		self.text = text
 		self.owner = owner
-													#classes (models)
+
+
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(120))
@@ -33,6 +33,7 @@ class User(db.Model):
 		self.username = username 
 		self.password = password
 
+#requires login for making posts
 @app.before_request
 def require_login():
 	allowed_routes = ['login', 'signup','blog']
@@ -41,8 +42,7 @@ def require_login():
 	else:
 		redirect('/')
 	
-#handlers (controlers)
-
+#handlers
 @app.route('/', methods=['GET', 'POST'])
 def index():
 	post_db = Post.query.all()
@@ -50,7 +50,6 @@ def index():
 	return render_template('dashboard.html', post_db = post_db, users = users)
 
 #renders individual blogs
-
 @app.route('/blog', methods=["GET"])
 def display():
 	individual = request.args.get('id')
@@ -67,11 +66,10 @@ def display():
 		return render_template('blog.html', post_db = post_db, users = users)
 
 #renders submit page
-
 @app.route('/newpost', methods=["GET", "POST"])
 def submit():
 	if 'username' in session:
-		if request.method == 'POST':		
+		if request.method == 'POST':	
 			owner = User.query.filter_by(username=session['username']).first()
 			text_input = request.form['text']
 			title_input = request.form['title']
@@ -79,14 +77,14 @@ def submit():
 			title = Post(title_input,text_input,owner)
 			db.session.add(title)
 			db.session.commit()
-			return redirect('/blog')
+			url = '/blog?id=' + str(title.id)
+			return redirect(url)
 		else:
 			return render_template('submit-page.html')
 	else:
 		return redirect('/login')
 
-#renders signup page (NEW HANDLERS BEGIN)
-
+#renders signup page
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
 	if request.method == 'POST':
@@ -110,7 +108,6 @@ def signup():
 		return render_template('signup.html')
 
 #renders login
-
 @app.route('/login', methods= ["GET", "POST"])
 def login():
 	if request.method == 'POST':
@@ -128,11 +125,13 @@ def login():
 		return render_template('login.html')
 
 #performs logout
-
 @app.route('/logout')
 def logout():
+	if 'username' in session:
 		del session['username']
 		return redirect('/')
+	else:
+		return redirect('/login')
 
 
 
