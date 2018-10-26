@@ -9,7 +9,6 @@ db = SQLAlchemy(app)
 app.secret_key = 'y33tiyghjgkcjg'
 
 #classes (models)
-
 class Post(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
@@ -21,7 +20,6 @@ class Post(db.Model):
 		self.title = title 
 		self.text = text
 		self.owner = owner
-
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -47,7 +45,7 @@ def require_login():
 def index():
 	post_db = Post.query.all()
 	users = User.query.all()
-	return render_template('dashboard.html', post_db = post_db, users = users)
+	return render_template('index.html', post_db = post_db, users = users)
 
 #renders individual blogs
 @app.route('/blog', methods=["GET"])
