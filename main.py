@@ -70,10 +70,9 @@ def display():
 
 @app.route('/newpost', methods=["GET", "POST"])
 def submit():
-	username = request.args.get('session')
-	if username:
-		owner = User.query.filter_by(username=session['username']).first()
-		if request.method == 'POST':
+	if 'username' in session:
+		if request.method == 'POST':		
+			owner = User.query.filter_by(username=session['username']).first()
 			text_input = request.form['text']
 			title_input = request.form['title']
 			# Blog stuff
@@ -132,9 +131,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-	del session['username']
-	return redirect('/')
-
+		del session['username']
+		return redirect('/')
 
 
 
