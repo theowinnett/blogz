@@ -55,13 +55,13 @@ def display():
 	users = User.query.all()
 	if individual:
 		post_db = Post.query.filter_by(id = individual)
-		return render_template('blog.html', post_db = post_db, users = users)
+		return render_template('posts.html', post_db = post_db, users = users)
 	elif individual_user:
 		post_db = Post.query.filter_by(user_id = individual_user)
-		return render_template('blog.html', post_db = post_db, users = users)
+		return render_template('posts.html', post_db = post_db, users = users)
 	else:
 		post_db = Post.query.all()
-		return render_template('blog.html', post_db = post_db, users = users)
+		return render_template('posts.html', post_db = post_db, users = users)
 
 #renders submit page
 @app.route('/newpost', methods=["GET", "POST"])
