@@ -35,10 +35,9 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-	allowed_routes = ['login', 'signup']
+	allowed_routes = ['login', 'signup','blog']
 	if request.endpoint not in allowed_routes and 'username' not in session:
 		flash("Login!")
-		return redirect('/login')
 	else:
 		redirect('/')
 	
@@ -46,22 +45,9 @@ def require_login():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	 
-	owner = User.query.filter_by(username=session['username']).first()
-	if request.method == 'POST':   
-		text_input = request.form['text']
-		title_input = request.form['title']
-		# Blog stuff
-		title = Post(title_input,text_input,owner)
-		db.session.add(title)
-		db.session.commit()
-		post_db = Post.query.all()
-		users = User.query.all()
-		return render_template('dashboard.html', post_db = post_db,  users = users)
-	else:
-		post_db = Post.query.all()
-		users = User.query.all()
-		return render_template('dashboard.html', post_db = post_db, users = users)
+	post_db = Post.query.all()
+	users = User.query.all()
+	return render_template('dashboard.html', post_db = post_db, users = users)
 
 #renders individual blogs
 
@@ -84,7 +70,21 @@ def display():
 
 @app.route('/newpost', methods=["GET", "POST"])
 def submit():
-	return render_template('submit-page.html')
+	username = request.args.get('session')
+	if username:
+		owner = User.query.filter_by(username=session['username']).first()
+		if request.method == 'POST':
+			text_input = request.form['text']
+			title_input = request.form['title']
+			# Blog stuff
+			title = Post(title_input,text_input,owner)
+			db.session.add(title)
+			db.session.commit()
+			return redirect('/blog')
+		else:
+			return render_template('submit-page.html')
+	else:
+		return redirect('/login')
 
 #renders signup page (NEW HANDLERS BEGIN)
 
@@ -107,6 +107,8 @@ def signup():
 		else:
 			flash("Duplicate User", "error")
 			return render_template('signup.html')
+	else:
+		return render_template('signup.html')
 
 #renders login
 
